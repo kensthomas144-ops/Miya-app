@@ -2,136 +2,183 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>Miya AI 🌸</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Miya-chan AI</title>
+
   <style>
     body {
       margin: 0;
-      height: 100vh;
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #ffd6e8, #ffffff);
+      background: linear-gradient(#ffd6e8, #fff);
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100vh;
     }
-    .chatbox {
-      width: 340px;
-      height: 500px;
+
+    .chat-box {
+      width: 95%;
+      max-width: 420px;
       background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
+
     .header {
-      background: #ff8fb1;
+      background: #ff8fb8;
       color: white;
-      padding: 10px;
+      padding: 12px;
       display: flex;
       align-items: center;
       gap: 10px;
       font-weight: bold;
     }
+
     .header img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      border: 2px solid white;
     }
-    .messages {
+
+    #chat {
       flex: 1;
-      padding: 15px;
+      padding: 12px;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      background: #fff6fa;
     }
-    .msg {
-      max-width: 80%;
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-size: 14px;
-    }
-    .user {
+
+    .user-msg {
+      background: #eaeaea;
+      padding: 10px;
+      border-radius: 15px;
+      margin: 6px 0;
       align-self: flex-end;
-      background: #eee;
-      color: #333;
+      max-width: 80%;
     }
-    .miya {
+
+    .bot-msg {
+      background: #ffd1e3;
+      padding: 10px;
+      border-radius: 15px;
+      margin: 6px 0;
       align-self: flex-start;
-      background: #ffe6f0;
-      color: #ff4d88;
+      max-width: 80%;
     }
-    .input-box {
+
+    .input-area {
       display: flex;
       border-top: 1px solid #ddd;
     }
-    input {
+
+    .input-area input {
       flex: 1;
       border: none;
-      padding: 15px;
+      padding: 12px;
+      font-size: 16px;
       outline: none;
     }
-    button {
+
+    .input-area button {
+      background: #ff8fb8;
       border: none;
-      background: #ff8fb1;
       color: white;
-      padding: 0 20px;
+      padding: 12px 18px;
+      font-size: 16px;
       cursor: pointer;
     }
   </style>
 </head>
+
 <body>
 
-<div class="chatbox">
+<div class="chat-box">
   <div class="header">
-    <img src="Screenshot_2026-01-04-12-44-59-31_680d03679600f7af0b4c700c6b270fe7.jpg" alt="🌸">
-    <span>Miya AI 🌸</span>
-  </div>
-  
-  <div class="messages" id="chat-window">
-    <div class="msg miya">Hello! I'm Miya-chan. How can I help you today? ✨</div>
+    <img src="Screenshot_2026-01-04-12-44-59-31_680d03679600f7af0b4c700c6b270fe7.jpg" alt="Miya">
+    Miya AI 🌸
   </div>
 
-  <div class="input-box">
-    <input type="text" id="user-input" placeholder="Type a message...">
+  <div id="chat">
+    <div class="bot-msg">
+      Hello! I'm Miya 💖<br>
+      What is your name?
+    </div>
+  </div>
+
+  <div class="input-area">
+    <input id="userInput" type="text" placeholder="Type a message..." />
     <button onclick="sendMessage()">Send</button>
   </div>
 </div>
 
 <script>
+  const chat = document.getElementById("chat");
+  let userName = localStorage.getItem("miya");
+
+  function addMessage(text, sender) {
+    const msg = document.createElement("div");
+    msg.className = sender === "user" ? "user-msg" : "bot-msg";
+    msg.innerText = text;
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function speak(text) {
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-US";
+    speech.pitch = 1.4;
+    speech.rate = 1;
+    window.speechSynthesis.speak(speech);
+  }
+
+  if (userName) {
+    addMessage(`Welcome back, ${kens}! 🌷`, "bot");
+    speak(`Welcome back, ${kens}`);
+  }
+
   function sendMessage() {
-    const input = document.getElementById('user-input');
-    const chatWindow = document.getElementById('chat-window');
-    
-    if (input.value.trim() === "") return;
+    const input = document.getElementById("userInput");
+    let msg = input.value.trim();
+    if (!msg) return;
 
-    // Add User Message
-    const userDiv = document.createElement('div');
-    userDiv.className = 'msg user';
-    userDiv.textContent = input.value;
-    chatWindow.appendChild(userDiv);
+    addMessage(msg, "user");
+    let text = msg.toLowerCase();
+    let reply = "Hmm~ tell me more 🌸";
 
-    const userText = input.value.toLowerCase();
-    input.value = "";
+    if (text.includes("my name is")) {
+      userName = msg.split("my name is")[1].trim();
+      localStorage.setItem("miya", kens);
+      reply = `Nice to meet you, ${kens}! 💖`;
+    }
+    else if (text.includes("hello") || text.includes("hi")) {
+      reply = userName
+        ? `Hello ${kens}! 😊`
+        : "Hello! I'm Miya 💕";
+    }
+    else if (text.includes("friend")) {
+      reply = "Best friends are the best memories 💞";
+    }
+    else if (text.includes("sad")) {
+      reply = "I'm here with you 🌷 You are not alone.";
+    }
+    else if (text.includes("happy")) {
+      reply = "Yay! That makes me smile ✨";
+    }
+    else if (text.includes("exam")) {
+      reply = "You can do it! Believe in yourself 📚💪";
+    }
+    else if (text.includes("who are you")) {
+      reply = "I'm Miya, your anime AI assistant 🌸";
+    }
 
-    // Miya's Response Logic
     setTimeout(() => {
-      const miyaDiv = document.createElement('div');
-      miyaDiv.className = 'msg miya';
-      
-      if (userText.includes("hello") || userText.includes("hi")) {
-        miyaDiv.textContent = "Hi there! It's so good to see you! 🌸";
-      } else if (userText.includes("how are you")) {
-        miyaDiv.textContent = "I'm doing wonderful! Ready to assist you. ✨";
-      } else {
-        miyaDiv.textContent = "That's interesting! Tell me more. 🎀";
-      }
-      
-      chatWindow.appendChild(miyaDiv);
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-    }, 600);
+      addMessage(reply, "bot");
+      speak(reply);
+    }, 500);
+
+    input.value = "";
   }
 </script>
 
