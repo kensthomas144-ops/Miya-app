@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Miya-chan AI</title>
-
   <style>
     body {
       margin: 0;
@@ -14,9 +14,9 @@
       justify-content: center;
       align-items: center;
     }
-
     .chatbox {
       width: 340px;
+      height: 500px;
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 10px 20px rgba(0,0,0,0.25);
@@ -24,7 +24,6 @@
       display: flex;
       flex-direction: column;
     }
-
     .header {
       background: #ff8fb1;
       color: white;
@@ -34,57 +33,52 @@
       gap: 10px;
       font-weight: bold;
     }
-
     .header img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
       border: 2px solid white;
     }
-
     .messages {
       flex: 1;
-      padding: 10px;
+      padding: 15px;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .msg {
+      max-width: 80%;
+      padding: 8px 12px;
+      border-radius: 12px;
       font-size: 14px;
     }
-
     .user {
-      text-align: right;
-      margin: 6px 0;
+      align-self: flex-end;
+      background: #eee;
       color: #333;
     }
-
     .miya {
-      text-align: left;
-      margin: 6px 0;
+      align-self: flex-start;
+      background: #ffe6f0;
       color: #ff4d88;
     }
-
     .input-box {
       display: flex;
       border-top: 1px solid #ddd;
     }
-
     input {
       flex: 1;
       border: none;
-      padding: 10px;
-      font-size: 14px;
+      padding: 15px;
       outline: none;
     }
-
     button {
       border: none;
       background: #ff8fb1;
       color: white;
-      padding: 10px 15px;
+      padding: 0 20px;
       cursor: pointer;
-      font-size: 14px;
-    }
-
-    button:hover {
-      background: #ff6fa1;
     }
   </style>
 </head>
@@ -92,5 +86,54 @@
 
 <div class="chatbox">
   <div class="header">
-    <img src="miya.png" alt="Miya">
+    <img src="miya.png" alt="🌸">
     <span>Miya-chan AI 🌸</span>
+  </div>
+  
+  <div class="messages" id="chat-window">
+    <div class="msg miya">Hello! I'm Miya-chan. How can I help you today? ✨</div>
+  </div>
+
+  <div class="input-box">
+    <input type="text" id="user-input" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+  function sendMessage() {
+    const input = document.getElementById('user-input');
+    const chatWindow = document.getElementById('chat-window');
+    
+    if (input.value.trim() === "") return;
+
+    // Add User Message
+    const userDiv = document.createElement('div');
+    userDiv.className = 'msg user';
+    userDiv.textContent = input.value;
+    chatWindow.appendChild(userDiv);
+
+    const userText = input.value.toLowerCase();
+    input.value = "";
+
+    // Miya's Response Logic
+    setTimeout(() => {
+      const miyaDiv = document.createElement('div');
+      miyaDiv.className = 'msg miya';
+      
+      if (userText.includes("hello") || userText.includes("hi")) {
+        miyaDiv.textContent = "Hi there! It's so good to see you! 🌸";
+      } else if (userText.includes("how are you")) {
+        miyaDiv.textContent = "I'm doing wonderful! Ready to assist you. ✨";
+      } else {
+        miyaDiv.textContent = "That's interesting! Tell me more. 🎀";
+      }
+      
+      chatWindow.appendChild(miyaDiv);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }, 600);
+  }
+</script>
+
+</body>
+</html>
